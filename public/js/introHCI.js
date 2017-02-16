@@ -27,12 +27,45 @@ function addProjectDetails(e) {
 	var idNumber = projectID.substr('project'.length);
 
 	console.log("User clicked on project " + idNumber);
+	var url = "/project/" + idNumber;
+
+	console.log(url);
+
+	$.get(url,callback);
+
+	function callback(result){
+		console.log(result);
+		var projectHTML = '<a href="#">' +
+		 '<img src="' + result['image'] + '" class="detailsImage"' +
+		 '<p>' + result['title'] + '</p>' + '<p>' + 
+		 result['date'] + '</p></a>';
+
+		var currentPosition = "#project" + idNumber;
+
+		// $(currentPosition).html(projectHTML);
+		$(currentPosition + " .thumbnail .details").html(projectHTML+result['summary']);
+	}
 }
 
 /*
  * Make an AJAX call to retrieve a color palette for the site
  * and apply it
  */
-function randomizeColors(e) {
+function randomizeColors(e) {-
 	console.log("User clicked on color button");
+	e.preventDefault();
+
+	$.get("/palette", callback);
+
+
+	function callback(data){
+		console.log(data["colors"]);
+		var colorArr = data["colors"];
+		var colors = colorArr["hex"];
+		$('body').css('background-color', colors[0]);
+		$('.thumbnail').css('background-color', colors[1]);
+		$('h1, h2, h3, h4, h5, h5').css('color', colors[2]);
+		$('p').css('color', colors[3]);
+		$('.project img').css('opacity', .75);
+	}
 }
